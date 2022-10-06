@@ -198,17 +198,18 @@ class Topic7Model(TopicBase):
     class Config:
         title = 'Forsave'
 
-with open('schema_topic1.json', 'w') as _f:
-    _f.write(Topic1Model.schema_json(indent=4))
+if __name__ == "__main__":
+    with open('schema_topic1.json', 'w') as _f:
+        _f.write(Topic1Model.schema_json(indent=4))
 
-with open('schema_topic100.json', 'w') as _f:
-    _f.write(Topic100Model.schema_json(indent=4))
+    with open('schema_topic100.json', 'w') as _f:
+        _f.write(Topic100Model.schema_json(indent=4))
 
-with open('schema_topic101.json', 'w') as _f:
-    _f.write(Topic101Model.schema_json(indent=4))
+    with open('schema_topic101.json', 'w') as _f:
+        _f.write(Topic101Model.schema_json(indent=4))
 
-with open('schema_topic6.json', 'w') as _f:
-    _f.write(Topic6Model.schema_json(indent=4))
+    with open('schema_topic6.json', 'w') as _f:
+        _f.write(Topic6Model.schema_json(indent=4))
 
-with open('schema_topic7.json', 'w') as _f:
-    _f.write(Topic7Model.schema_json(indent=4))
+    with open('schema_topic7.json', 'w') as _f:
+        _f.write(Topic7Model.schema_json(indent=4))
