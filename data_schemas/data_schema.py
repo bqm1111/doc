@@ -1,6 +1,7 @@
 """generate json schema for all topics"""
 from datetime import datetime
 from enum import Enum
+from turtle import title
 from typing import List, Dict, Any, Type
 from pydantic import BaseModel, Field
 
@@ -108,6 +109,32 @@ class MotDisplayMeta(CustomBaseModel):
         description="MOT object id"
     )
 
+class Topic1Model(TopicBase):
+    """
+    event data with full information, including face feature, face cropped image, maybe human cropped image
+    """
+
+    FACE: List[FaceMeta] = Field(
+        description="list of all faces in this frame"
+    )
+
+    MOT: List[MotMeta] = Field(
+        description="list of all mot object in this frame"
+    )
+
+    class Config:
+        title = 'RawMeta'
+
+class Topic100Model(TopicBase):
+    """emit resized full frame image, without any drawing"""
+
+    frame: str = Field(
+        description="base64 encoded of the resized full frame"
+    )
+
+    class Config:
+        title = 'RawImage'
+
 class Topic101Model(TopicBase):
     """
     Debug (resized) image with information, including face (resized) bouding boxes, human (resized) bouding boxes 
@@ -167,6 +194,12 @@ class Topic7Model(TopicBase):
 
     class Config:
         title = 'Forsave'
+
+with open('schema_topic1.json', 'w') as _f:
+    _f.write(Topic1Model.schema_json(indent=4))
+
+with open('schema_topic100.json', 'w') as _f:
+    _f.write(Topic100Model.schema_json(indent=4))
 
 with open('schema_topic101.json', 'w') as _f:
     _f.write(Topic101Model.schema_json(indent=4))

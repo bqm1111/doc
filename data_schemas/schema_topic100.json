@@ -1,0 +1,39 @@
+{
+    "title": "RawImage",
+    "description": "emit resized full frame image, without any drawing",
+    "type": "object",
+    "properties": {
+        "srctime": {
+            "description": "Time stamp of this image",
+            "type": "string",
+            "format": "date-time"
+        },
+        "camera_id": {
+            "description": "id of the camera that this event blong to",
+            "type": "string"
+        },
+        "session_id": {
+            "description": "unique id of deepstream-app session",
+            "type": "string"
+        },
+        "frame_id": {
+            "description": "frame id of this frame in this session",
+            "type": "integer"
+        },
+        "image": {
+            "description": "base64 encoded of this face cropped image",
+            "type": "string"
+        },
+        "frame": {
+            "description": "base64 encoded of the resized full frame",
+            "type": "string"
+        }
+    },
+    "required": [
+        "srctime",
+        "camera_id",
+        "session_id",
+        "frame_id",
+        "frame"
+    ]
+}
