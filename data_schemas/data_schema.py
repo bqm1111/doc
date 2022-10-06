@@ -72,20 +72,56 @@ class MotMeta(CustomBaseModel):
         description="base64 encoded of the embedding of this person"
     )
 
+class FaceDisplayMeta(CustomBaseModel):
+    """Face for display in debug mode"""
+    bbox: BBox = Field(
+        description="resized bouding box"
+    )
+    frame_w: int = Field(
+        description="width of frame which this bbox is on"
+    )
+    frame_h: int = Field(
+        description="height of frame which this bbox is on"
+    )
+    is_stranger: bool = Field(
+        description="is this face a stranger?"
+    )
+    name: str = Field(
+        description="name of this person"
+    )
+    confident: float = Field(
+        description="face naming confident"
+    )
+
+class MotDisplayMeta(CustomBaseModel):
+    """MOT object for display in debug mode"""
+    bbox: BBox = Field(
+        description="resized bouding box"
+    )
+    frame_w: int = Field(
+        description="width of frame which this bbox is on"
+    )
+    frame_h: int = Field(
+        description="height of frame which this bbox is on"
+    )
+    object_id: int = Field(
+        description="MOT object id"
+    )
 
 class Topic101Model(TopicBase):
     """
-    event data with full information, including face feature, face cropped image, maybe human cropped image
+    Debug (resized) image with information, including face (resized) bouding boxes, human (resized) bouding boxes 
+    Shoule be use to draw in UI apps.
     """
     image: str = Field(
-        description="base64 encoded of the full image"
+        description="base64 encoded of the full resized image"
     )
 
-    FACE: List[FaceMeta] = Field(
+    FACE: List[FaceDisplayMeta] = Field(
         description="list of all faces in this image"
     )
 
-    MOT: List[MotMeta] = Field(
+    MOT: List[MotDisplayMeta] = Field(
         description="list of all mot object in this image"
     )
 

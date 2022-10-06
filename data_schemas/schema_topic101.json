@@ -1,6 +1,6 @@
 {
     "title": "Display",
-    "description": "event data with full information, including face feature, face cropped image, maybe human cropped image",
+    "description": "Debug (resized) image with information, including face (resized) bouding boxes, human (resized) bouding boxes \nShoule be use to draw in UI apps.",
     "type": "object",
     "properties": {
         "srctime": {
@@ -21,21 +21,21 @@
             "type": "integer"
         },
         "image": {
-            "description": "base64 encoded of the full image",
+            "description": "base64 encoded of the full resized image",
             "type": "string"
         },
         "FACE": {
             "description": "list of all faces in this image",
             "type": "array",
             "items": {
-                "$ref": "#/definitions/FaceMeta"
+                "$ref": "#/definitions/FaceDisplayMeta"
             }
         },
         "MOT": {
             "description": "list of all mot object in this image",
             "type": "array",
             "items": {
-                "$ref": "#/definitions/MotMeta"
+                "$ref": "#/definitions/MotDisplayMeta"
             }
         }
     },
@@ -74,70 +74,80 @@
                 "h"
             ]
         },
-        "FaceMeta": {
-            "title": "FaceMeta",
-            "description": "Face message",
+        "FaceDisplayMeta": {
+            "title": "FaceDisplayMeta",
+            "description": "Face for display in debug mode",
             "type": "object",
             "properties": {
                 "bbox": {
-                    "$ref": "#/definitions/BBox"
-                },
-                "is_stranger": {
-                    "description": "is this face a stranger?",
-                    "type": "boolean"
-                },
-                "staff_id": {
-                    "description": "match the staff id in the database",
-                    "type": "integer"
-                },
-                "confident": {
-                    "description": "face naming confident",
-                    "type": "number"
-                },
-                "feature": {
-                    "description": "base64 encoded of this face feature vector",
-                    "type": "string"
-                },
-                "image": {
-                    "description": "base64 encoded of this face cropped image",
-                    "type": "string"
-                }
-            },
-            "required": [
-                "bbox",
-                "is_stranger",
-                "staff_id",
-                "confident",
-                "feature",
-                "image"
-            ]
-        },
-        "MotMeta": {
-            "title": "MotMeta",
-            "description": "MOT metadata object",
-            "type": "object",
-            "properties": {
-                "bbox": {
-                    "description": "bouding box of this person",
+                    "description": "resized bouding box",
                     "allOf": [
                         {
                             "$ref": "#/definitions/BBox"
                         }
                     ]
                 },
-                "object_id": {
-                    "description": "MOT object id",
+                "frame_w": {
+                    "description": "width of frame which this bbox is on",
                     "type": "integer"
                 },
-                "embedding": {
-                    "description": "base64 encoded of the embedding of this person",
+                "frame_h": {
+                    "description": "height of frame which this bbox is on",
+                    "type": "integer"
+                },
+                "is_stranger": {
+                    "description": "is this face a stranger?",
+                    "type": "boolean"
+                },
+                "name": {
+                    "description": "name of this person",
                     "type": "string"
+                },
+                "confident": {
+                    "description": "face naming confident",
+                    "type": "number"
                 }
             },
             "required": [
                 "bbox",
-                "object_id",
-                "embedding"
+                "frame_w",
+                "frame_h",
+                "is_stranger",
+                "name",
+                "confident"
+            ]
+        },
+        "MotDisplayMeta": {
+            "title": "MotDisplayMeta",
+            "description": "MOT object for display in debug mode",
+            "type": "object",
+            "properties": {
+                "bbox": {
+                    "description": "resized bouding box",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/BBox"
+                        }
+                    ]
+                },
+                "frame_w": {
+                    "description": "width of frame which this bbox is on",
+                    "type": "integer"
+                },
+                "frame_h": {
+                    "description": "height of frame which this bbox is on",
+                    "type": "integer"
+                },
+                "object_id": {
+                    "description": "MOT object id",
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "bbox",
+                "frame_w",
+                "frame_h",
+                "object_id"
             ]
         }
     }
