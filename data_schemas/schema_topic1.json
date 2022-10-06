@@ -24,14 +24,14 @@
             "description": "list of all faces in this frame",
             "type": "array",
             "items": {
-                "$ref": "#/definitions/FaceMeta"
+                "$ref": "#/definitions/FaceRawMeta"
             }
         },
         "MOT": {
             "description": "list of all mot object in this frame",
             "type": "array",
             "items": {
-                "$ref": "#/definitions/MotMeta"
+                "$ref": "#/definitions/MotRawMeta"
             }
         }
     },
@@ -69,17 +69,13 @@
                 "h"
             ]
         },
-        "FaceMeta": {
-            "title": "FaceMeta",
-            "description": "Face message",
+        "FaceRawMeta": {
+            "title": "FaceRawMeta",
+            "description": "Face raw metadata",
             "type": "object",
             "properties": {
                 "bbox": {
                     "$ref": "#/definitions/BBox"
-                },
-                "is_stranger": {
-                    "description": "is this face a stranger?",
-                    "type": "boolean"
                 },
                 "staff_id": {
                     "description": "match the staff id in the database",
@@ -100,16 +96,15 @@
             },
             "required": [
                 "bbox",
-                "is_stranger",
                 "staff_id",
                 "confident",
                 "feature",
                 "image"
             ]
         },
-        "MotMeta": {
-            "title": "MotMeta",
-            "description": "MOT metadata object",
+        "MotRawMeta": {
+            "title": "MotRawMeta",
+            "description": "MOT raw metadata",
             "type": "object",
             "properties": {
                 "bbox": {

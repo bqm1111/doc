@@ -38,12 +38,9 @@ class BBox(CustomBaseModel):
     w: float
     h: float
 
-class FaceMeta(CustomBaseModel):
-    """Face message"""
+class FaceRawMeta(CustomBaseModel):
+    """Face raw metadata"""
     bbox: BBox
-    is_stranger: bool = Field(
-        description="is this face a stranger?"
-    )
     staff_id: int = Field(
         description="match the staff id in the database"
     )
@@ -57,16 +54,10 @@ class FaceMeta(CustomBaseModel):
         description="base64 encoded of this face cropped image"
     )
 
-class MotMeta(CustomBaseModel):
-    """MOT metadata object"""
-    bbox: BBox = Field(
-        description="bouding box of this person"
-    )
-    object_id: int = Field(
-        description="MOT object id"
-    )
-    embedding: str = Field(
-        description="base64 encoded of the embedding of this person"
+class FaceMeta(FaceRawMeta):
+    """Face metadata"""
+    is_stranger: bool = Field(
+        description="is this face a stranger?"
     )
 
 class FaceDisplayMeta(CustomBaseModel):
@@ -90,6 +81,22 @@ class FaceDisplayMeta(CustomBaseModel):
         description="face naming confident"
     )
 
+class MotRawMeta(CustomBaseModel):
+    """MOT raw metadata"""
+    bbox: BBox = Field(
+        description="bouding box of this person"
+    )
+    object_id: int = Field(
+        description="MOT object id"
+    )
+    embedding: str = Field(
+        description="base64 encoded of the embedding of this person"
+    )
+
+class MotMeta(MotRawMeta):
+    """MOT metadata object"""
+    pass
+
 class MotDisplayMeta(CustomBaseModel):
     """MOT object for display in debug mode"""
     bbox: BBox = Field(
@@ -110,11 +117,11 @@ class Topic1Model(TopicBase):
     event data with full information, including face feature, face cropped image, maybe human cropped image
     """
 
-    FACE: List[FaceMeta] = Field(
+    FACE: List[FaceRawMeta] = Field(
         description="list of all faces in this frame"
     )
 
-    MOT: List[MotMeta] = Field(
+    MOT: List[MotRawMeta] = Field(
         description="list of all mot object in this frame"
     )
 

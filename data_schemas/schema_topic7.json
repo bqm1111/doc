@@ -71,15 +71,11 @@
         },
         "FaceMeta": {
             "title": "FaceMeta",
-            "description": "Face message",
+            "description": "Face metadata",
             "type": "object",
             "properties": {
                 "bbox": {
                     "$ref": "#/definitions/BBox"
-                },
-                "is_stranger": {
-                    "description": "is this face a stranger?",
-                    "type": "boolean"
                 },
                 "staff_id": {
                     "description": "match the staff id in the database",
@@ -96,15 +92,19 @@
                 "image": {
                     "description": "base64 encoded of this face cropped image",
                     "type": "string"
+                },
+                "is_stranger": {
+                    "description": "is this face a stranger?",
+                    "type": "boolean"
                 }
             },
             "required": [
                 "bbox",
-                "is_stranger",
                 "staff_id",
                 "confident",
                 "feature",
-                "image"
+                "image",
+                "is_stranger"
             ]
         },
         "MotMeta": {
