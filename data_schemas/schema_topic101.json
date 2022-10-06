@@ -1,0 +1,144 @@
+{
+    "title": "Display",
+    "description": "event data with full information, including face feature, face cropped image, maybe human cropped image",
+    "type": "object",
+    "properties": {
+        "srctime": {
+            "description": "Time stamp of this image",
+            "type": "string",
+            "format": "date-time"
+        },
+        "camera_id": {
+            "description": "id of the camera that this event blong to",
+            "type": "string"
+        },
+        "session_id": {
+            "description": "unique id of deepstream-app session",
+            "type": "string"
+        },
+        "frame_id": {
+            "description": "frame id of this frame in this session",
+            "type": "integer"
+        },
+        "image": {
+            "description": "base64 encoded of the full image",
+            "type": "string"
+        },
+        "FACE": {
+            "description": "list of all faces in this image",
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/FaceMeta"
+            }
+        },
+        "MOT": {
+            "description": "list of all mot object in this image",
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/MotMeta"
+            }
+        }
+    },
+    "required": [
+        "srctime",
+        "camera_id",
+        "session_id",
+        "frame_id",
+        "image",
+        "FACE",
+        "MOT"
+    ],
+    "definitions": {
+        "BBox": {
+            "title": "BBox",
+            "description": "Bouding boxes",
+            "type": "object",
+            "properties": {
+                "x": {
+                    "type": "number"
+                },
+                "y": {
+                    "type": "number"
+                },
+                "w": {
+                    "type": "number"
+                },
+                "h": {
+                    "type": "number"
+                }
+            },
+            "required": [
+                "x",
+                "y",
+                "w",
+                "h"
+            ]
+        },
+        "FaceMeta": {
+            "title": "FaceMeta",
+            "description": "Face message",
+            "type": "object",
+            "properties": {
+                "bbox": {
+                    "$ref": "#/definitions/BBox"
+                },
+                "is_stranger": {
+                    "description": "is this face a stranger?",
+                    "type": "boolean"
+                },
+                "staff_id": {
+                    "description": "match the staff id in the database",
+                    "type": "integer"
+                },
+                "confident": {
+                    "description": "face naming confident",
+                    "type": "number"
+                },
+                "feature": {
+                    "description": "base64 encoded of this face feature vector",
+                    "type": "string"
+                },
+                "image": {
+                    "description": "base64 encoded of this face cropped image",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "bbox",
+                "is_stranger",
+                "staff_id",
+                "confident",
+                "feature",
+                "image"
+            ]
+        },
+        "MotMeta": {
+            "title": "MotMeta",
+            "description": "MOT metadata object",
+            "type": "object",
+            "properties": {
+                "bbox": {
+                    "description": "bouding box of this person",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/BBox"
+                        }
+                    ]
+                },
+                "object_id": {
+                    "description": "MOT object id",
+                    "type": "integer"
+                },
+                "embedding": {
+                    "description": "base64 encoded of the embedding of this person",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "bbox",
+                "object_id",
+                "embedding"
+            ]
+        }
+    }
+}

@@ -1,0 +1,114 @@
+{
+    "title": "Event",
+    "description": "event data with minimum, only-for-display information",
+    "type": "object",
+    "properties": {
+        "srctime": {
+            "description": "Time stamp of this image",
+            "type": "string",
+            "format": "date-time"
+        },
+        "camera_id": {
+            "description": "id of the camera that this event blong to",
+            "type": "string"
+        },
+        "event_type": {
+            "description": "type of this event",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/EventType"
+                }
+            ]
+        },
+        "face_meta": {
+            "description": "only face_meat for now",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/FaceMeta"
+                }
+            ]
+        }
+    },
+    "required": [
+        "srctime",
+        "camera_id",
+        "event_type",
+        "face_meta"
+    ],
+    "definitions": {
+        "EventType": {
+            "title": "EventType",
+            "description": "Types of event will be stream to UI\nEVENT_FACE: event recognize a face or found a stranger\nEVENT_CAMERA: a camera is be moved\nEVENT_SYSTEM: maybe some important system messages\nEVENT_OTHER: other",
+            "enum": [
+                "event_face",
+                "event_camera",
+                "event_system",
+                "event_other"
+            ],
+            "type": "string"
+        },
+        "BBox": {
+            "title": "BBox",
+            "description": "Bouding boxes",
+            "type": "object",
+            "properties": {
+                "x": {
+                    "type": "number"
+                },
+                "y": {
+                    "type": "number"
+                },
+                "w": {
+                    "type": "number"
+                },
+                "h": {
+                    "type": "number"
+                }
+            },
+            "required": [
+                "x",
+                "y",
+                "w",
+                "h"
+            ]
+        },
+        "FaceMeta": {
+            "title": "FaceMeta",
+            "description": "Face message",
+            "type": "object",
+            "properties": {
+                "bbox": {
+                    "$ref": "#/definitions/BBox"
+                },
+                "is_stranger": {
+                    "description": "is this face a stranger?",
+                    "type": "boolean"
+                },
+                "staff_id": {
+                    "description": "match the staff id in the database",
+                    "type": "integer"
+                },
+                "confident": {
+                    "description": "face naming confident",
+                    "type": "number"
+                },
+                "feature": {
+                    "description": "base64 encoded of this face feature vector",
+                    "type": "string"
+                },
+                "image": {
+                    "description": "base64 encoded of this face cropped image",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "bbox",
+                "is_stranger",
+                "staff_id",
+                "confident",
+                "feature",
+                "image"
+            ]
+        }
+    }
+}
