@@ -30,10 +30,6 @@ class TopicBase(EventBase):
     frame_id: int = Field(
         description="frame id of this frame in this session"
     )
-    image: str = Field(
-        None,
-        description="base64 encoded of this face cropped image"
-    )
 
 class BBox(CustomBaseModel):
     """Bouding boxes"""

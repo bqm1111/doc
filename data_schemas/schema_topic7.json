@@ -20,10 +20,6 @@
             "description": "frame id of this frame in this session",
             "type": "integer"
         },
-        "image": {
-            "description": "base64 encoded of this face cropped image",
-            "type": "string"
-        },
         "FACE": {
             "description": "list of all faces in this frame",
             "type": "array",
