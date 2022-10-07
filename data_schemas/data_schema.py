@@ -147,6 +147,14 @@ class Topic101Model(TopicBase):
         description="base64 encoded of the full resized image"
     )
 
+    image_w: int = Field(
+        description="width of the image"
+    )
+
+    image_h: int = Field(
+        description="height of the image"
+    )
+
     FACE: List[FaceDisplayMeta] = Field(
         description="list of all faces in this image"
     )

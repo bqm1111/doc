@@ -24,6 +24,14 @@
             "description": "base64 encoded of the full resized image",
             "type": "string"
         },
+        "image_w": {
+            "description": "width of the image",
+            "type": "integer"
+        },
+        "image_h": {
+            "description": "height of the image",
+            "type": "integer"
+        },
         "FACE": {
             "description": "list of all faces in this image",
             "type": "array",
@@ -45,6 +53,8 @@
         "session_id",
         "frame_id",
         "image",
+        "image_w",
+        "image_h",
         "FACE",
         "MOT"
     ],
