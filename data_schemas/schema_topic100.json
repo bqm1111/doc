@@ -23,6 +23,14 @@
         "frame": {
             "description": "base64 encoded of the resized full frame",
             "type": "string"
+        },
+        "frame_w": {
+            "description": "width of the image",
+            "type": "integer"
+        },
+        "frame_h": {
+            "description": "height of the image",
+            "type": "integer"
         }
     },
     "required": [
@@ -30,6 +38,8 @@
         "camera_id",
         "session_id",
         "frame_id",
-        "frame"
+        "frame",
+        "frame_w",
+        "frame_h"
     ]
 }

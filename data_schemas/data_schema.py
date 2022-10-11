@@ -165,27 +165,23 @@ class Topic100Model(TopicBase):
         description="base64 encoded of the resized full frame"
     )
 
+    frame_w: int = Field(
+        description="width of the image"
+    )
+
+    frame_h: int = Field(
+        description="height of the image"
+    )
+
     class Config:
         title = 'RawImage'
 
 
-class Topic101Model(TopicBase):
+class Topic101Model(Topic100Model):
     """
     Debug (resized) image with information, including face (resized) bouding boxes, human (resized) bouding boxes 
     Shoule be use to draw in UI apps.
     """
-    image: str = Field(
-        description="base64 encoded of the full resized image"
-    )
-
-    image_w: int = Field(
-        description="width of the image"
-    )
-
-    image_h: int = Field(
-        description="height of the image"
-    )
-
     FACE: List[FaceDisplayMeta] = Field(
         description="list of all faces in this image"
     )

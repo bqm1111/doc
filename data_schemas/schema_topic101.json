@@ -20,15 +20,15 @@
             "description": "frame id of this frame in this session",
             "type": "integer"
         },
-        "image": {
-            "description": "base64 encoded of the full resized image",
+        "frame": {
+            "description": "base64 encoded of the resized full frame",
             "type": "string"
         },
-        "image_w": {
+        "frame_w": {
             "description": "width of the image",
             "type": "integer"
         },
-        "image_h": {
+        "frame_h": {
             "description": "height of the image",
             "type": "integer"
         },
@@ -52,9 +52,9 @@
         "camera_id",
         "session_id",
         "frame_id",
-        "image",
-        "image_w",
-        "image_h",
+        "frame",
+        "frame_w",
+        "frame_h",
         "FACE",
         "MOT"
     ],
