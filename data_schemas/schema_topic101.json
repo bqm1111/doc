@@ -59,21 +59,29 @@
         "MOT"
     ],
     "definitions": {
-        "BBox": {
-            "title": "BBox",
-            "description": "Bouding boxes",
+        "RelativeBBox": {
+            "title": "RelativeBBox",
+            "description": "just the BaseModel without title",
             "type": "object",
             "properties": {
                 "x": {
+                    "minimum": 0,
+                    "maximum": 1.0,
                     "type": "number"
                 },
                 "y": {
+                    "minimum": 0,
+                    "maximum": 1.0,
                     "type": "number"
                 },
                 "w": {
+                    "minimum": 0,
+                    "maximum": 1.0,
                     "type": "number"
                 },
                 "h": {
+                    "minimum": 0,
+                    "maximum": 1.0,
                     "type": "number"
                 }
             },
@@ -90,20 +98,12 @@
             "type": "object",
             "properties": {
                 "bbox": {
-                    "description": "resized bouding box",
+                    "description": "relative bouding box",
                     "allOf": [
                         {
-                            "$ref": "#/definitions/BBox"
+                            "$ref": "#/definitions/RelativeBBox"
                         }
                     ]
-                },
-                "frame_w": {
-                    "description": "width of frame which this bbox is on",
-                    "type": "integer"
-                },
-                "frame_h": {
-                    "description": "height of frame which this bbox is on",
-                    "type": "integer"
                 },
                 "is_stranger": {
                     "description": "is this face a stranger?",
@@ -120,8 +120,6 @@
             },
             "required": [
                 "bbox",
-                "frame_w",
-                "frame_h",
                 "is_stranger",
                 "name",
                 "confident"
@@ -133,20 +131,12 @@
             "type": "object",
             "properties": {
                 "bbox": {
-                    "description": "resized bouding box",
+                    "description": "relative bouding box",
                     "allOf": [
                         {
-                            "$ref": "#/definitions/BBox"
+                            "$ref": "#/definitions/RelativeBBox"
                         }
                     ]
-                },
-                "frame_w": {
-                    "description": "width of frame which this bbox is on",
-                    "type": "integer"
-                },
-                "frame_h": {
-                    "description": "height of frame which this bbox is on",
-                    "type": "integer"
                 },
                 "object_id": {
                     "description": "MOT object id",
@@ -155,8 +145,6 @@
             },
             "required": [
                 "bbox",
-                "frame_w",
-                "frame_h",
                 "object_id"
             ]
         }

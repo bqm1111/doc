@@ -54,6 +54,11 @@ class BBox(CustomBaseModel):
     w: float
     h: float
 
+class RelativeBBox(CustomBaseModel):
+    x: float = Field(ge=0, le=1.0)
+    y: float = Field(ge=0, le=1.0)
+    w: float = Field(ge=0, le=1.0)
+    h: float = Field(ge=0, le=1.0)
 
 class FaceRawMeta(CustomBaseModel):
     """Face raw metadata"""
@@ -81,14 +86,8 @@ class FaceMeta(FaceRawMeta):
 
 class FaceDisplayMeta(CustomBaseModel):
     """Face for display in debug mode"""
-    bbox: BBox = Field(
-        description="resized bouding box"
-    )
-    frame_w: int = Field(
-        description="width of frame which this bbox is on"
-    )
-    frame_h: int = Field(
-        description="height of frame which this bbox is on"
+    bbox: RelativeBBox = Field(
+        description="relative bouding box"
     )
     is_stranger: bool = Field(
         description="is this face a stranger?"
@@ -121,14 +120,8 @@ class MotMeta(MotRawMeta):
 
 class MotDisplayMeta(CustomBaseModel):
     """MOT object for display in debug mode"""
-    bbox: BBox = Field(
-        description="resized bouding box"
-    )
-    frame_w: int = Field(
-        description="width of frame which this bbox is on"
-    )
-    frame_h: int = Field(
-        description="height of frame which this bbox is on"
+    bbox: RelativeBBox = Field(
+        description="relative bouding box"
     )
     object_id: int = Field(
         description="MOT object id"
