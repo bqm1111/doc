@@ -84,8 +84,12 @@
                     "description": "match the staff id in the database",
                     "type": "integer"
                 },
-                "confident": {
-                    "description": "face naming confident",
+                "name": {
+                    "description": "name or any text to be display",
+                    "type": "string"
+                },
+                "score": {
+                    "description": "face naming score",
                     "type": "number"
                 },
                 "feature": {
@@ -104,7 +108,8 @@
             "required": [
                 "bbox",
                 "staff_id",
-                "confident",
+                "name",
+                "score",
                 "feature",
                 "image",
                 "is_stranger"

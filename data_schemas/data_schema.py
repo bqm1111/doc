@@ -66,8 +66,11 @@ class FaceRawMeta(CustomBaseModel):
     staff_id: int = Field(
         description="match the staff id in the database"
     )
-    confident: float = Field(
-        description="face naming confident"
+    name: str = Field(
+        description="name or any text to be display"
+    )
+    score: float = Field(
+        description="face naming score"
     )
     feature: str = Field(
         description="base64 encoded of this face feature vector"
