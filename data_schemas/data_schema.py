@@ -1,7 +1,6 @@
 """generate json schema for all topics"""
 from datetime import datetime
 from enum import Enum
-from turtle import title
 from typing import List, Dict, Any, Type
 from pydantic import BaseModel, Field
 
@@ -46,6 +45,19 @@ class TopicBase(EventBase):
             frame_id=self.frame_id
         )
 
+class RelativeBBox(CustomBaseModel):
+    x: float = Field(ge=0, le=1.0)
+    y: float = Field(ge=0, le=1.0)
+    w: float = Field(ge=0, le=1.0)
+    h: float = Field(ge=0, le=1.0)
+
+def clip(value: float, min: float=0.0, max: float=1.0):
+    """force min <= value <= max"""
+    if value < min:
+        return min
+    if value > max:
+        return max
+    return value
 
 class BBox(CustomBaseModel):
     """Bouding boxes"""
@@ -54,11 +66,13 @@ class BBox(CustomBaseModel):
     w: float
     h: float
 
-class RelativeBBox(CustomBaseModel):
-    x: float = Field(ge=0, le=1.0)
-    y: float = Field(ge=0, le=1.0)
-    w: float = Field(ge=0, le=1.0)
-    h: float = Field(ge=0, le=1.0)
+    def to_relative(self, frame_w: int, frame_h: int) -> RelativeBBox:
+        return RelativeBBox(
+            x=clip(self.x / frame_w, 0.0, 1.0),
+            y=clip(self.y / frame_h, 0.0, 1.0),
+            w=clip(self.w / frame_w, 0.0, 1.0),
+            h=clip(self.h / frame_h, 0.0, 1.0),
+        )
 
 class FaceRawMeta(CustomBaseModel):
     """Face raw metadata"""
