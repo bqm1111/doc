@@ -1,16 +1,12 @@
 """generate json schema for all topics"""
 from datetime import datetime
 from enum import Enum
-from typing import List, Dict, Any, Type
+from typing import List, Dict, Any, Tuple, Type
 from pydantic import BaseModel, Field
 
 
 class CustomBaseModel(BaseModel):
     """just the BaseModel without title"""
-
-    def __hash__(self):
-        return hash((type(self),) + tuple(self.__dict__.values()))
-
     class Config:
         @staticmethod
         def schema_extra(schema: Dict[str, Any], model: Type['CustomBaseModel']) -> None:
@@ -37,7 +33,19 @@ class TopicBase(EventBase):
         description="frame id of this frame in this session"
     )
 
-    def get_key(self) -> 'TopicBase':
+    def __hash__(self):
+        return hash((type(self), self.session_id, self.camera_id, self.frame_id))
+
+    def __eq__(self, other: 'TopicBase'):
+        return (self.session_id, self.camera_id, self.frame_id) == (other.session_id, other.camera_id, other.frame_id)
+
+    def __ne__(self, other: 'TopicBase'):
+        # Not strictly necessary, but to avoid having both x==y and x!=y
+        # True at the same time
+        return not(self == other)
+
+    def get_key(self) -> Tuple:
+        # return (self.session_id, self.camera_id, self.frame_id)
         return TopicBase(
             srctime=self.srctime,
             camera_id=self.camera_id,
