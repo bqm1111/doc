@@ -85,7 +85,7 @@ class BBox(CustomBaseModel):
 class FaceRawMeta(CustomBaseModel):
     """Face raw metadata"""
     bbox: BBox
-    staff_id: int = Field(
+    staff_id: str = Field(
         description="match the staff id in the database"
     )
     name: str = Field(
