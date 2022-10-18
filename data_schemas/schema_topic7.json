@@ -79,7 +79,7 @@
                 },
                 "staff_id": {
                     "description": "match the staff id in the database",
-                    "type": "integer"
+                    "type": "string"
                 },
                 "name": {
                     "description": "name or any text to be display",
