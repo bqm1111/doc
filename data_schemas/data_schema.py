@@ -85,6 +85,18 @@ class BBox(CustomBaseModel):
             h=clip(self.h / frame_h, 0.0, 1.0),
         )
 
+    def x1(self) -> float:
+        return self.x
+
+    def y1(self) -> float:
+        return self.y
+
+    def x2(self) -> float:
+        return self.x + self.w
+
+    def y2(self) -> float:
+        return self.y + self.h
+
 
 class FaceRawMeta(CustomBaseModel):
     """Face raw metadata"""
