@@ -1,0 +1,154 @@
+{
+    "title": "Matched",
+    "description": "event data including face feature, cropped face, and matched information between face and mot",
+    "type": "object",
+    "properties": {
+        "srctime": {
+            "description": "Time stamp of this image",
+            "type": "string",
+            "format": "date-time"
+        },
+        "camera_id": {
+            "description": "id of the camera that this event blong to",
+            "type": "string"
+        },
+        "session_id": {
+            "description": "unique id of deepstream-app session",
+            "type": "string"
+        },
+        "frame_id": {
+            "description": "frame id of this frame in this session",
+            "type": "integer"
+        },
+        "OBJ": {
+            "description": "list of all object in this frame",
+            "default": [],
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/MatchedMeta"
+            }
+        }
+    },
+    "required": [
+        "srctime",
+        "camera_id",
+        "session_id",
+        "frame_id"
+    ],
+    "definitions": {
+        "BBox": {
+            "title": "BBox",
+            "description": "Bouding boxes",
+            "type": "object",
+            "properties": {
+                "x": {
+                    "type": "number"
+                },
+                "y": {
+                    "type": "number"
+                },
+                "w": {
+                    "type": "number"
+                },
+                "h": {
+                    "type": "number"
+                }
+            },
+            "required": [
+                "x",
+                "y",
+                "w",
+                "h"
+            ]
+        },
+        "FaceRawMeta": {
+            "title": "FaceRawMeta",
+            "description": "Face raw metadata",
+            "type": "object",
+            "properties": {
+                "bbox": {
+                    "$ref": "#/definitions/BBox"
+                },
+                "staff_id": {
+                    "description": "match the staff id in the database",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "name or any text to be display",
+                    "type": "string"
+                },
+                "score": {
+                    "description": "face naming score",
+                    "type": "number"
+                },
+                "feature": {
+                    "description": "base64 encoded of this face feature vector",
+                    "type": "string"
+                },
+                "image": {
+                    "description": "base64 encoded of this face cropped image",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "bbox",
+                "staff_id",
+                "name",
+                "score",
+                "feature",
+                "image"
+            ]
+        },
+        "MotRawMeta": {
+            "title": "MotRawMeta",
+            "description": "MOT raw metadata",
+            "type": "object",
+            "properties": {
+                "bbox": {
+                    "description": "bouding box of this person",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/BBox"
+                        }
+                    ]
+                },
+                "object_id": {
+                    "description": "MOT object id",
+                    "type": "integer"
+                },
+                "embedding": {
+                    "description": "base64 encoded of the embedding of this person",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "bbox",
+                "object_id",
+                "embedding"
+            ]
+        },
+        "MatchedMeta": {
+            "title": "MatchedMeta",
+            "description": "an object, which can be face and mot and both",
+            "type": "object",
+            "properties": {
+                "face": {
+                    "description": "face",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/FaceRawMeta"
+                        }
+                    ]
+                },
+                "mot": {
+                    "description": "mot",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/MotRawMeta"
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}

@@ -1,7 +1,7 @@
 """generate json schema for all topics"""
 from datetime import datetime
 from enum import Enum
-from typing import List, Dict, Any, Tuple, Type
+from typing import List, Dict, Any, Optional, Tuple, Type
 from pydantic import BaseModel, Field
 
 
@@ -53,19 +53,22 @@ class TopicBase(EventBase):
             frame_id=self.frame_id
         )
 
+
 class RelativeBBox(CustomBaseModel):
     x: float = Field(ge=0, le=1.0)
     y: float = Field(ge=0, le=1.0)
     w: float = Field(ge=0, le=1.0)
     h: float = Field(ge=0, le=1.0)
 
-def clip(value: float, min: float=0.0, max: float=1.0):
+
+def clip(value: float, min: float = 0.0, max: float = 1.0):
     """force min <= value <= max"""
     if value < min:
         return min
     if value > max:
         return max
     return value
+
 
 class BBox(CustomBaseModel):
     """Bouding boxes"""
@@ -81,6 +84,7 @@ class BBox(CustomBaseModel):
             w=clip(self.w / frame_w, 0.0, 1.0),
             h=clip(self.h / frame_h, 0.0, 1.0),
         )
+
 
 class FaceRawMeta(CustomBaseModel):
     """Face raw metadata"""
@@ -153,6 +157,12 @@ class MotDisplayMeta(CustomBaseModel):
     )
 
 
+class MatchedMeta(CustomBaseModel):
+    """an object, which can be face and mot and both"""
+    face: FaceRawMeta = Field(None, description="face")
+    mot: MotRawMeta = Field(None, description="mot")
+
+
 class Topic1Model(TopicBase):
     """
     event data with full information, including face feature, face cropped image, maybe human cropped image
@@ -170,8 +180,25 @@ class Topic1Model(TopicBase):
         title = 'RawMeta'
 
 
-class Topic5Model(Topic1Model):
+class Topic3Model(Topic1Model):
     """For now, it just the topic1 with changed name"""
+    class Config:
+        title = 'Filtered'
+
+
+class Topic4Model(TopicBase):
+    """event data including face feature, cropped face, and matched information between face and mot"""
+    OBJ: List[MatchedMeta] = Field(
+        [],
+        description="list of all object in this frame"
+    )
+
+    class Config:
+        title = 'Matched'
+
+
+class Topic5Model(Topic4Model):
+    """For now, it just the topic4 with changed name"""
     class Config:
         title = 'Mtmc'
 
@@ -258,6 +285,12 @@ class Topic7Model(TopicBase):
 if __name__ == "__main__":
     with open('schema_topic1.json', 'w') as _f:
         _f.write(Topic1Model.schema_json(indent=4))
+
+    with open('schema_topic3.json', 'w') as _f:
+        _f.write(Topic3Model.schema_json(indent=4))
+
+    with open('schema_topic4.json', 'w') as _f:
+        _f.write(Topic4Model.schema_json(indent=4))
 
     with open('schema_topic5.json', 'w') as _f:
         _f.write(Topic5Model.schema_json(indent=4))

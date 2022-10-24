@@ -1,0 +1,139 @@
+{
+    "title": "Filtered",
+    "description": "For now, it just the topic1 with changed name",
+    "type": "object",
+    "properties": {
+        "srctime": {
+            "description": "Time stamp of this image",
+            "type": "string",
+            "format": "date-time"
+        },
+        "camera_id": {
+            "description": "id of the camera that this event blong to",
+            "type": "string"
+        },
+        "session_id": {
+            "description": "unique id of deepstream-app session",
+            "type": "string"
+        },
+        "frame_id": {
+            "description": "frame id of this frame in this session",
+            "type": "integer"
+        },
+        "FACE": {
+            "description": "list of all faces in this frame",
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/FaceRawMeta"
+            }
+        },
+        "MOT": {
+            "description": "list of all mot object in this frame",
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/MotRawMeta"
+            }
+        }
+    },
+    "required": [
+        "srctime",
+        "camera_id",
+        "session_id",
+        "frame_id",
+        "FACE",
+        "MOT"
+    ],
+    "definitions": {
+        "BBox": {
+            "title": "BBox",
+            "description": "Bouding boxes",
+            "type": "object",
+            "properties": {
+                "x": {
+                    "type": "number"
+                },
+                "y": {
+                    "type": "number"
+                },
+                "w": {
+                    "type": "number"
+                },
+                "h": {
+                    "type": "number"
+                }
+            },
+            "required": [
+                "x",
+                "y",
+                "w",
+                "h"
+            ]
+        },
+        "FaceRawMeta": {
+            "title": "FaceRawMeta",
+            "description": "Face raw metadata",
+            "type": "object",
+            "properties": {
+                "bbox": {
+                    "$ref": "#/definitions/BBox"
+                },
+                "staff_id": {
+                    "description": "match the staff id in the database",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "name or any text to be display",
+                    "type": "string"
+                },
+                "score": {
+                    "description": "face naming score",
+                    "type": "number"
+                },
+                "feature": {
+                    "description": "base64 encoded of this face feature vector",
+                    "type": "string"
+                },
+                "image": {
+                    "description": "base64 encoded of this face cropped image",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "bbox",
+                "staff_id",
+                "name",
+                "score",
+                "feature",
+                "image"
+            ]
+        },
+        "MotRawMeta": {
+            "title": "MotRawMeta",
+            "description": "MOT raw metadata",
+            "type": "object",
+            "properties": {
+                "bbox": {
+                    "description": "bouding box of this person",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/BBox"
+                        }
+                    ]
+                },
+                "object_id": {
+                    "description": "MOT object id",
+                    "type": "integer"
+                },
+                "embedding": {
+                    "description": "base64 encoded of the embedding of this person",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "bbox",
+                "object_id",
+                "embedding"
+            ]
+        }
+    }
+}
