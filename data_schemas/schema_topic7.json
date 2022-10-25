@@ -20,18 +20,12 @@
             "description": "frame id of this frame in this session",
             "type": "integer"
         },
-        "FACE": {
-            "description": "list of all faces in this frame",
+        "OBJ": {
+            "description": "list of all object in this frame",
+            "default": [],
             "type": "array",
             "items": {
-                "$ref": "#/definitions/FaceMeta"
-            }
-        },
-        "MOT": {
-            "description": "list of all mot object in this frame",
-            "type": "array",
-            "items": {
-                "$ref": "#/definitions/MotMeta"
+                "$ref": "#/definitions/MatchedMeta"
             }
         }
     },
@@ -39,9 +33,7 @@
         "srctime",
         "camera_id",
         "session_id",
-        "frame_id",
-        "FACE",
-        "MOT"
+        "frame_id"
     ],
     "definitions": {
         "BBox": {
@@ -69,9 +61,9 @@
                 "h"
             ]
         },
-        "FaceMeta": {
-            "title": "FaceMeta",
-            "description": "Face metadata",
+        "FaceRawMeta": {
+            "title": "FaceRawMeta",
+            "description": "Face raw metadata",
             "type": "object",
             "properties": {
                 "bbox": {
@@ -96,10 +88,6 @@
                 "image": {
                     "description": "base64 encoded of this face cropped image",
                     "type": "string"
-                },
-                "is_stranger": {
-                    "description": "is this face a stranger?",
-                    "type": "boolean"
                 }
             },
             "required": [
@@ -108,13 +96,12 @@
                 "name",
                 "score",
                 "feature",
-                "image",
-                "is_stranger"
+                "image"
             ]
         },
-        "MotMeta": {
-            "title": "MotMeta",
-            "description": "MOT metadata object",
+        "MotRawMeta": {
+            "title": "MotRawMeta",
+            "description": "MOT raw metadata",
             "type": "object",
             "properties": {
                 "bbox": {
@@ -139,6 +126,43 @@
                 "object_id",
                 "embedding"
             ]
+        },
+        "MCMTMeta": {
+            "title": "MCMTMeta",
+            "description": "Multi-camera multi-tracking meta",
+            "type": "object",
+            "properties": {}
+        },
+        "MatchedMeta": {
+            "title": "MatchedMeta",
+            "description": "an object, which can be face and mot and both",
+            "type": "object",
+            "properties": {
+                "face": {
+                    "description": "face",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/FaceRawMeta"
+                        }
+                    ]
+                },
+                "mot": {
+                    "description": "mot",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/MotRawMeta"
+                        }
+                    ]
+                },
+                "mtmc": {
+                    "description": "mtmc meta",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/MCMTMeta"
+                        }
+                    ]
+                }
+            }
         }
     }
 }

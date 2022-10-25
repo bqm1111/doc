@@ -127,6 +127,12 @@
                 "embedding"
             ]
         },
+        "MCMTMeta": {
+            "title": "MCMTMeta",
+            "description": "Multi-camera multi-tracking meta",
+            "type": "object",
+            "properties": {}
+        },
         "MatchedMeta": {
             "title": "MatchedMeta",
             "description": "an object, which can be face and mot and both",
@@ -145,6 +151,14 @@
                     "allOf": [
                         {
                             "$ref": "#/definitions/MotRawMeta"
+                        }
+                    ]
+                },
+                "mtmc": {
+                    "description": "mtmc meta",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/MCMTMeta"
                         }
                     ]
                 }

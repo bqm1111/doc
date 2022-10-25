@@ -20,6 +20,14 @@
             "description": "frame id of this frame in this session",
             "type": "integer"
         },
+        "OBJ": {
+            "description": "list of all object in this frame",
+            "default": [],
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/MatchedMeta"
+            }
+        },
         "frame": {
             "description": "base64 encoded of the resized full frame",
             "type": "string"
@@ -31,20 +39,6 @@
         "frame_h": {
             "description": "height of the image",
             "type": "integer"
-        },
-        "FACE": {
-            "description": "list of all faces in this image",
-            "type": "array",
-            "items": {
-                "$ref": "#/definitions/FaceDisplayMeta"
-            }
-        },
-        "MOT": {
-            "description": "list of all mot object in this image",
-            "type": "array",
-            "items": {
-                "$ref": "#/definitions/MotDisplayMeta"
-            }
         }
     },
     "required": [
@@ -54,34 +48,24 @@
         "frame_id",
         "frame",
         "frame_w",
-        "frame_h",
-        "FACE",
-        "MOT"
+        "frame_h"
     ],
     "definitions": {
-        "RelativeBBox": {
-            "title": "RelativeBBox",
-            "description": "just the BaseModel without title",
+        "BBox": {
+            "title": "BBox",
+            "description": "Bouding boxes",
             "type": "object",
             "properties": {
                 "x": {
-                    "minimum": 0,
-                    "maximum": 1.0,
                     "type": "number"
                 },
                 "y": {
-                    "minimum": 0,
-                    "maximum": 1.0,
                     "type": "number"
                 },
                 "w": {
-                    "minimum": 0,
-                    "maximum": 1.0,
                     "type": "number"
                 },
                 "h": {
-                    "minimum": 0,
-                    "maximum": 1.0,
                     "type": "number"
                 }
             },
@@ -92,61 +76,108 @@
                 "h"
             ]
         },
-        "FaceDisplayMeta": {
-            "title": "FaceDisplayMeta",
-            "description": "Face for display in debug mode",
+        "FaceRawMeta": {
+            "title": "FaceRawMeta",
+            "description": "Face raw metadata",
             "type": "object",
             "properties": {
                 "bbox": {
-                    "description": "relative bouding box",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/RelativeBBox"
-                        }
-                    ]
+                    "$ref": "#/definitions/BBox"
                 },
-                "is_stranger": {
-                    "description": "is this face a stranger?",
-                    "type": "boolean"
-                },
-                "name": {
-                    "description": "name of this person",
+                "staff_id": {
+                    "description": "match the staff id in the database",
                     "type": "string"
                 },
-                "confident": {
-                    "description": "face naming confident",
+                "name": {
+                    "description": "name or any text to be display",
+                    "type": "string"
+                },
+                "score": {
+                    "description": "face naming score",
                     "type": "number"
+                },
+                "feature": {
+                    "description": "base64 encoded of this face feature vector",
+                    "type": "string"
+                },
+                "image": {
+                    "description": "base64 encoded of this face cropped image",
+                    "type": "string"
                 }
             },
             "required": [
                 "bbox",
-                "is_stranger",
+                "staff_id",
                 "name",
-                "confident"
+                "score",
+                "feature",
+                "image"
             ]
         },
-        "MotDisplayMeta": {
-            "title": "MotDisplayMeta",
-            "description": "MOT object for display in debug mode",
+        "MotRawMeta": {
+            "title": "MotRawMeta",
+            "description": "MOT raw metadata",
             "type": "object",
             "properties": {
                 "bbox": {
-                    "description": "relative bouding box",
+                    "description": "bouding box of this person",
                     "allOf": [
                         {
-                            "$ref": "#/definitions/RelativeBBox"
+                            "$ref": "#/definitions/BBox"
                         }
                     ]
                 },
                 "object_id": {
                     "description": "MOT object id",
                     "type": "integer"
+                },
+                "embedding": {
+                    "description": "base64 encoded of the embedding of this person",
+                    "type": "string"
                 }
             },
             "required": [
                 "bbox",
-                "object_id"
+                "object_id",
+                "embedding"
             ]
+        },
+        "MCMTMeta": {
+            "title": "MCMTMeta",
+            "description": "Multi-camera multi-tracking meta",
+            "type": "object",
+            "properties": {}
+        },
+        "MatchedMeta": {
+            "title": "MatchedMeta",
+            "description": "an object, which can be face and mot and both",
+            "type": "object",
+            "properties": {
+                "face": {
+                    "description": "face",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/FaceRawMeta"
+                        }
+                    ]
+                },
+                "mot": {
+                    "description": "mot",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/MotRawMeta"
+                        }
+                    ]
+                },
+                "mtmc": {
+                    "description": "mtmc meta",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/MCMTMeta"
+                        }
+                    ]
+                }
+            }
         }
     }
 }

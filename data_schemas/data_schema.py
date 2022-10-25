@@ -1,7 +1,7 @@
 """generate json schema for all topics"""
 from datetime import datetime
 from enum import Enum
-from typing import List, Dict, Any, Optional, Tuple, Type
+from typing import List, Dict, Any, Optional, Tuple, Type, Union
 from pydantic import BaseModel, Field
 
 
@@ -169,10 +169,16 @@ class MotDisplayMeta(CustomBaseModel):
     )
 
 
+class MCMTMeta(CustomBaseModel):
+    """Multi-camera multi-tracking meta"""
+    pass
+
+
 class MatchedMeta(CustomBaseModel):
     """an object, which can be face and mot and both"""
     face: FaceRawMeta = Field(None, description="face")
     mot: MotRawMeta = Field(None, description="mot")
+    mtmc: MCMTMeta = Field(None, description="mtmc meta")
 
 
 class Topic1Model(TopicBase):
@@ -234,18 +240,11 @@ class Topic100Model(TopicBase):
         title = 'RawImage'
 
 
-class Topic101Model(Topic100Model):
+class Topic101Model(Topic100Model, Topic5Model):
     """
     Debug (resized) image with information, including face (resized) bouding boxes, human (resized) bouding boxes 
     Shoule be use to draw in UI apps.
     """
-    FACE: List[FaceDisplayMeta] = Field(
-        description="list of all faces in this image"
-    )
-
-    MOT: List[MotDisplayMeta] = Field(
-        description="list of all mot object in this image"
-    )
 
     class Config:
         title = 'Display'
@@ -278,17 +277,8 @@ class Topic6Model(EventBase):
         title = 'Event'
 
 
-class Topic7Model(TopicBase):
+class Topic7Model(Topic5Model):
     """event data with full information, including face feature, face cropped image, maybe human cropped image"""
-    FACE: List[FaceMeta] = Field(
-        description="list of all faces in this frame"
-    )
-
-    MOT: List[MotMeta] = Field(
-        description="list of all mot object in this frame"
-    )
-
-    # TODO: add MTMC information
 
     class Config:
         title = 'Forsave'
