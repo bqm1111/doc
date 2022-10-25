@@ -103,6 +103,16 @@
                 "is_stranger": {
                     "description": "is this face a stranger?",
                     "type": "boolean"
+                },
+                "title": {
+                    "description": "displaying title",
+                    "default": "",
+                    "type": "string"
+                },
+                "note": {
+                    "description": "custom notes go here",
+                    "default": "",
+                    "type": "string"
                 }
             },
             "required": [

@@ -123,6 +123,14 @@ class FaceMeta(FaceRawMeta):
     is_stranger: bool = Field(
         description="is this face a stranger?"
     )
+    title: str = Field(
+        "",
+        description="displaying title"
+    )
+    note: str = Field(
+        "",
+        description="custom notes go here"
+    )
 
 
 class FaceDisplayMeta(CustomBaseModel):
