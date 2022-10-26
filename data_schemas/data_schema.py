@@ -1,7 +1,7 @@
 """generate json schema for all topics"""
 from datetime import datetime
 from enum import Enum
-from typing import List, Dict, Any, Tuple, Type
+from typing import List, Dict, Any, Optional, Tuple, Type, Union
 from pydantic import BaseModel, Field
 
 
@@ -53,13 +53,7 @@ class TopicBase(EventBase):
             frame_id=self.frame_id
         )
 
-class RelativeBBox(CustomBaseModel):
-    x: float = Field(ge=0, le=1.0)
-    y: float = Field(ge=0, le=1.0)
-    w: float = Field(ge=0, le=1.0)
-    h: float = Field(ge=0, le=1.0)
-
-def clip(value: float, min: float=0.0, max: float=1.0):
+def clip(value: float, min: float = 0.0, max: float = 1.0):
     """force min <= value <= max"""
     if value < min:
         return min
@@ -67,23 +61,29 @@ def clip(value: float, min: float=0.0, max: float=1.0):
         return max
     return value
 
+
 class BBox(CustomBaseModel):
-    """Bouding boxes"""
-    x: float
-    y: float
-    w: float
-    h: float
+    """Bouding boxes in relative coordinate"""
+    x: float = Field(ge=0, le=1.0)
+    y: float = Field(ge=0, le=1.0)
+    w: float = Field(ge=0, le=1.0)
+    h: float = Field(ge=0, le=1.0)
 
-    def to_relative(self, frame_w: int, frame_h: int) -> RelativeBBox:
-        return RelativeBBox(
-            x=clip(self.x / frame_w, 0.0, 1.0),
-            y=clip(self.y / frame_h, 0.0, 1.0),
-            w=clip(self.w / frame_w, 0.0, 1.0),
-            h=clip(self.h / frame_h, 0.0, 1.0),
-        )
+    def x1(self) -> float:
+        return self.x
 
-class FaceRawMeta(CustomBaseModel):
-    """Face raw metadata"""
+    def y1(self) -> float:
+        return self.y
+
+    def x2(self) -> float:
+        return self.x + self.w
+
+    def y2(self) -> float:
+        return self.y + self.h
+
+
+class FaceMetaBase(CustomBaseModel):
+    """Face base metadata"""
     bbox: BBox
     staff_id: str = Field(
         description="match the staff id in the database"
@@ -94,6 +94,9 @@ class FaceRawMeta(CustomBaseModel):
     score: float = Field(
         description="face naming score"
     )
+
+class FaceMetaRaw(FaceMetaBase):
+    """Face raw metadata"""
     feature: str = Field(
         description="base64 encoded of this face feature vector"
     )
@@ -102,31 +105,22 @@ class FaceRawMeta(CustomBaseModel):
     )
 
 
-class FaceMeta(FaceRawMeta):
-    """Face metadata"""
+class FaceMeta(FaceMetaRaw):
+    """Full Face metadata"""
     is_stranger: bool = Field(
         description="is this face a stranger?"
     )
-
-
-class FaceDisplayMeta(CustomBaseModel):
-    """Face for display in debug mode"""
-    bbox: RelativeBBox = Field(
-        description="relative bouding box"
+    title: str = Field(
+        "",
+        description="displaying title"
     )
-    is_stranger: bool = Field(
-        description="is this face a stranger?"
-    )
-    name: str = Field(
-        description="name of this person"
-    )
-    confident: float = Field(
-        description="face naming confident"
+    note: str = Field(
+        "",
+        description="custom notes go here"
     )
 
-
-class MotRawMeta(CustomBaseModel):
-    """MOT raw metadata"""
+class MotMetaBase(CustomBaseModel):
+    """MOT base metadata"""
     bbox: BBox = Field(
         description="bouding box of this person"
     )
@@ -137,41 +131,68 @@ class MotRawMeta(CustomBaseModel):
         description="base64 encoded of the embedding of this person"
     )
 
+class MotMetaRaw(MotMetaBase):
+    """MOT raw metadata"""
+    embedding: str = Field(
+        description="base64 encoded of the embedding of this person"
+    )
 
-class MotMeta(MotRawMeta):
-    """MOT metadata object"""
+
+class MotMeta(MotMetaRaw):
+    """MOT full metadata"""
+    pass
+
+class MCMTMeta(CustomBaseModel):
+    """Multi-camera multi-tracking meta"""
     pass
 
 
-class MotDisplayMeta(CustomBaseModel):
-    """MOT object for display in debug mode"""
-    bbox: RelativeBBox = Field(
-        description="relative bouding box"
-    )
-    object_id: int = Field(
-        description="MOT object id"
-    )
+class MatchedMeta(CustomBaseModel):
+    """an object, which can be face and mot and both"""
+    face: FaceMeta = Field(None, description="face")
+    mot: MotMeta = Field(None, description="mot")
+    mtmc: MCMTMeta = Field(None, description="mtmc meta")
 
 
 class Topic1Model(TopicBase):
     """
-    event data with full information, including face feature, face cropped image, maybe human cropped image
+    MOT event metadata
     """
-
-    FACE: List[FaceRawMeta] = Field(
-        description="list of all faces in this frame"
-    )
-
-    MOT: List[MotRawMeta] = Field(
+    MOT: List[MotMetaRaw] = Field(
+        [],
         description="list of all mot object in this frame"
     )
 
     class Config:
         title = 'RawMeta'
 
+class Topic2Model(TopicBase):
+    """
+    Face event metadata
+    """
+    face: FaceMetaRaw = Field(
+        description="Face event metadata"
+    )
 
-class Topic5Model(Topic1Model):
-    """For now, it just the topic1 with changed name"""
+class Topic3Model(Topic2Model):
+    """Filter faces frop topic2"""
+    class Config:
+        title = 'Filtered'
+
+
+class Topic4Model(TopicBase):
+    """event data including face feature, cropped face, and matched information between face and mot"""
+    OBJ: List[MatchedMeta] = Field(
+        [],
+        description="list of all object in this frame"
+    )
+
+    class Config:
+        title = 'Matched'
+
+
+class Topic5Model(Topic4Model):
+    """For now, it just the topic4 with changed name"""
     class Config:
         title = 'Mtmc'
 
@@ -195,18 +216,11 @@ class Topic100Model(TopicBase):
         title = 'RawImage'
 
 
-class Topic101Model(Topic100Model):
+class Topic101Model(Topic100Model, Topic5Model):
     """
     Debug (resized) image with information, including face (resized) bouding boxes, human (resized) bouding boxes 
     Shoule be use to draw in UI apps.
     """
-    FACE: List[FaceDisplayMeta] = Field(
-        description="list of all faces in this image"
-    )
-
-    MOT: List[MotDisplayMeta] = Field(
-        description="list of all mot object in this image"
-    )
 
     class Config:
         title = 'Display'
@@ -239,17 +253,8 @@ class Topic6Model(EventBase):
         title = 'Event'
 
 
-class Topic7Model(TopicBase):
+class Topic7Model(Topic5Model):
     """event data with full information, including face feature, face cropped image, maybe human cropped image"""
-    FACE: List[FaceMeta] = Field(
-        description="list of all faces in this frame"
-    )
-
-    MOT: List[MotMeta] = Field(
-        description="list of all mot object in this frame"
-    )
-
-    # TODO: add MTMC information
 
     class Config:
         title = 'Forsave'
@@ -258,6 +263,15 @@ class Topic7Model(TopicBase):
 if __name__ == "__main__":
     with open('schema_topic1.json', 'w') as _f:
         _f.write(Topic1Model.schema_json(indent=4))
+
+    with open('schema_topic2.json', 'w') as _f:
+        _f.write(Topic2Model.schema_json(indent=4))
+
+    with open('schema_topic3.json', 'w') as _f:
+        _f.write(Topic3Model.schema_json(indent=4))
+
+    with open('schema_topic4.json', 'w') as _f:
+        _f.write(Topic4Model.schema_json(indent=4))
 
     with open('schema_topic5.json', 'w') as _f:
         _f.write(Topic5Model.schema_json(indent=4))

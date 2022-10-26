@@ -1,6 +1,6 @@
 {
-    "title": "Forsave",
-    "description": "event data with full information, including face feature, face cropped image, maybe human cropped image",
+    "title": "Mtmc",
+    "description": "For now, it just the topic4 with changed name",
     "type": "object",
     "properties": {
         "srctime": {

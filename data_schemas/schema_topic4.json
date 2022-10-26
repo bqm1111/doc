@@ -1,6 +1,6 @@
 {
-    "title": "Forsave",
-    "description": "event data with full information, including face feature, face cropped image, maybe human cropped image",
+    "title": "Matched",
+    "description": "event data including face feature, cropped face, and matched information between face and mot",
     "type": "object",
     "properties": {
         "srctime": {
