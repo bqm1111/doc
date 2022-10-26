@@ -49,19 +49,27 @@
         },
         "BBox": {
             "title": "BBox",
-            "description": "Bouding boxes",
+            "description": "Bouding boxes in relative coordinate",
             "type": "object",
             "properties": {
                 "x": {
+                    "minimum": 0,
+                    "maximum": 1.0,
                     "type": "number"
                 },
                 "y": {
+                    "minimum": 0,
+                    "maximum": 1.0,
                     "type": "number"
                 },
                 "w": {
+                    "minimum": 0,
+                    "maximum": 1.0,
                     "type": "number"
                 },
                 "h": {
+                    "minimum": 0,
+                    "maximum": 1.0,
                     "type": "number"
                 }
             },
@@ -74,7 +82,7 @@
         },
         "FaceMeta": {
             "title": "FaceMeta",
-            "description": "Face metadata",
+            "description": "Full Face metadata",
             "type": "object",
             "properties": {
                 "bbox": {

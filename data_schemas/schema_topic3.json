@@ -22,16 +22,18 @@
         },
         "FACE": {
             "description": "list of all faces in this frame",
+            "default": [],
             "type": "array",
             "items": {
-                "$ref": "#/definitions/FaceRawMeta"
+                "$ref": "#/definitions/FaceMetaRaw"
             }
         },
         "MOT": {
             "description": "list of all mot object in this frame",
+            "default": [],
             "type": "array",
             "items": {
-                "$ref": "#/definitions/MotRawMeta"
+                "$ref": "#/definitions/MotMetaRaw"
             }
         }
     },
@@ -39,26 +41,32 @@
         "srctime",
         "camera_id",
         "session_id",
-        "frame_id",
-        "FACE",
-        "MOT"
+        "frame_id"
     ],
     "definitions": {
         "BBox": {
             "title": "BBox",
-            "description": "Bouding boxes",
+            "description": "Bouding boxes in relative coordinate",
             "type": "object",
             "properties": {
                 "x": {
+                    "minimum": 0,
+                    "maximum": 1.0,
                     "type": "number"
                 },
                 "y": {
+                    "minimum": 0,
+                    "maximum": 1.0,
                     "type": "number"
                 },
                 "w": {
+                    "minimum": 0,
+                    "maximum": 1.0,
                     "type": "number"
                 },
                 "h": {
+                    "minimum": 0,
+                    "maximum": 1.0,
                     "type": "number"
                 }
             },
@@ -69,8 +77,8 @@
                 "h"
             ]
         },
-        "FaceRawMeta": {
-            "title": "FaceRawMeta",
+        "FaceMetaRaw": {
+            "title": "FaceMetaRaw",
             "description": "Face raw metadata",
             "type": "object",
             "properties": {
@@ -107,8 +115,8 @@
                 "image"
             ]
         },
-        "MotRawMeta": {
-            "title": "MotRawMeta",
+        "MotMetaRaw": {
+            "title": "MotMetaRaw",
             "description": "MOT raw metadata",
             "type": "object",
             "properties": {

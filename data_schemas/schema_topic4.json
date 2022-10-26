@@ -38,19 +38,27 @@
     "definitions": {
         "BBox": {
             "title": "BBox",
-            "description": "Bouding boxes",
+            "description": "Bouding boxes in relative coordinate",
             "type": "object",
             "properties": {
                 "x": {
+                    "minimum": 0,
+                    "maximum": 1.0,
                     "type": "number"
                 },
                 "y": {
+                    "minimum": 0,
+                    "maximum": 1.0,
                     "type": "number"
                 },
                 "w": {
+                    "minimum": 0,
+                    "maximum": 1.0,
                     "type": "number"
                 },
                 "h": {
+                    "minimum": 0,
+                    "maximum": 1.0,
                     "type": "number"
                 }
             },
@@ -61,9 +69,9 @@
                 "h"
             ]
         },
-        "FaceRawMeta": {
-            "title": "FaceRawMeta",
-            "description": "Face raw metadata",
+        "FaceMeta": {
+            "title": "FaceMeta",
+            "description": "Full Face metadata",
             "type": "object",
             "properties": {
                 "bbox": {
@@ -88,6 +96,20 @@
                 "image": {
                     "description": "base64 encoded of this face cropped image",
                     "type": "string"
+                },
+                "is_stranger": {
+                    "description": "is this face a stranger?",
+                    "type": "boolean"
+                },
+                "title": {
+                    "description": "displaying title",
+                    "default": "",
+                    "type": "string"
+                },
+                "note": {
+                    "description": "custom notes go here",
+                    "default": "",
+                    "type": "string"
                 }
             },
             "required": [
@@ -96,12 +118,13 @@
                 "name",
                 "score",
                 "feature",
-                "image"
+                "image",
+                "is_stranger"
             ]
         },
-        "MotRawMeta": {
-            "title": "MotRawMeta",
-            "description": "MOT raw metadata",
+        "MotMeta": {
+            "title": "MotMeta",
+            "description": "MOT full metadata",
             "type": "object",
             "properties": {
                 "bbox": {
@@ -142,7 +165,7 @@
                     "description": "face",
                     "allOf": [
                         {
-                            "$ref": "#/definitions/FaceRawMeta"
+                            "$ref": "#/definitions/FaceMeta"
                         }
                     ]
                 },
@@ -150,7 +173,7 @@
                     "description": "mot",
                     "allOf": [
                         {
-                            "$ref": "#/definitions/MotRawMeta"
+                            "$ref": "#/definitions/MotMeta"
                         }
                     ]
                 },

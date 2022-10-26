@@ -53,14 +53,6 @@ class TopicBase(EventBase):
             frame_id=self.frame_id
         )
 
-
-class RelativeBBox(CustomBaseModel):
-    x: float = Field(ge=0, le=1.0)
-    y: float = Field(ge=0, le=1.0)
-    w: float = Field(ge=0, le=1.0)
-    h: float = Field(ge=0, le=1.0)
-
-
 def clip(value: float, min: float = 0.0, max: float = 1.0):
     """force min <= value <= max"""
     if value < min:
@@ -71,19 +63,11 @@ def clip(value: float, min: float = 0.0, max: float = 1.0):
 
 
 class BBox(CustomBaseModel):
-    """Bouding boxes"""
-    x: float
-    y: float
-    w: float
-    h: float
-
-    def to_relative(self, frame_w: int, frame_h: int) -> RelativeBBox:
-        return RelativeBBox(
-            x=clip(self.x / frame_w, 0.0, 1.0),
-            y=clip(self.y / frame_h, 0.0, 1.0),
-            w=clip(self.w / frame_w, 0.0, 1.0),
-            h=clip(self.h / frame_h, 0.0, 1.0),
-        )
+    """Bouding boxes in relative coordinate"""
+    x: float = Field(ge=0, le=1.0)
+    y: float = Field(ge=0, le=1.0)
+    w: float = Field(ge=0, le=1.0)
+    h: float = Field(ge=0, le=1.0)
 
     def x1(self) -> float:
         return self.x
@@ -98,8 +82,8 @@ class BBox(CustomBaseModel):
         return self.y + self.h
 
 
-class FaceRawMeta(CustomBaseModel):
-    """Face raw metadata"""
+class FaceMetaBase(CustomBaseModel):
+    """Face base metadata"""
     bbox: BBox
     staff_id: str = Field(
         description="match the staff id in the database"
@@ -110,6 +94,9 @@ class FaceRawMeta(CustomBaseModel):
     score: float = Field(
         description="face naming score"
     )
+
+class FaceMetaRaw(FaceMetaBase):
+    """Face raw metadata"""
     feature: str = Field(
         description="base64 encoded of this face feature vector"
     )
@@ -118,8 +105,8 @@ class FaceRawMeta(CustomBaseModel):
     )
 
 
-class FaceMeta(FaceRawMeta):
-    """Face metadata"""
+class FaceMeta(FaceMetaRaw):
+    """Full Face metadata"""
     is_stranger: bool = Field(
         description="is this face a stranger?"
     )
@@ -132,25 +119,8 @@ class FaceMeta(FaceRawMeta):
         description="custom notes go here"
     )
 
-
-class FaceDisplayMeta(CustomBaseModel):
-    """Face for display in debug mode"""
-    bbox: RelativeBBox = Field(
-        description="relative bouding box"
-    )
-    is_stranger: bool = Field(
-        description="is this face a stranger?"
-    )
-    name: str = Field(
-        description="name of this person"
-    )
-    confident: float = Field(
-        description="face naming confident"
-    )
-
-
-class MotRawMeta(CustomBaseModel):
-    """MOT raw metadata"""
+class MotMetaBase(CustomBaseModel):
+    """MOT base metadata"""
     bbox: BBox = Field(
         description="bouding box of this person"
     )
@@ -161,21 +131,16 @@ class MotRawMeta(CustomBaseModel):
         description="base64 encoded of the embedding of this person"
     )
 
+class MotMetaRaw(MotMetaBase):
+    """MOT raw metadata"""
+    embedding: str = Field(
+        description="base64 encoded of the embedding of this person"
+    )
 
-class MotMeta(MotRawMeta):
-    """MOT metadata object"""
+
+class MotMeta(MotMetaRaw):
+    """MOT full metadata"""
     pass
-
-
-class MotDisplayMeta(CustomBaseModel):
-    """MOT object for display in debug mode"""
-    bbox: RelativeBBox = Field(
-        description="relative bouding box"
-    )
-    object_id: int = Field(
-        description="MOT object id"
-    )
-
 
 class MCMTMeta(CustomBaseModel):
     """Multi-camera multi-tracking meta"""
@@ -184,8 +149,8 @@ class MCMTMeta(CustomBaseModel):
 
 class MatchedMeta(CustomBaseModel):
     """an object, which can be face and mot and both"""
-    face: FaceRawMeta = Field(None, description="face")
-    mot: MotRawMeta = Field(None, description="mot")
+    face: FaceMeta = Field(None, description="face")
+    mot: MotMeta = Field(None, description="mot")
     mtmc: MCMTMeta = Field(None, description="mtmc meta")
 
 
@@ -194,11 +159,13 @@ class Topic1Model(TopicBase):
     event data with full information, including face feature, face cropped image, maybe human cropped image
     """
 
-    FACE: List[FaceRawMeta] = Field(
+    FACE: List[FaceMetaRaw] = Field(
+        [],
         description="list of all faces in this frame"
     )
 
-    MOT: List[MotRawMeta] = Field(
+    MOT: List[MotMetaRaw] = Field(
+        [],
         description="list of all mot object in this frame"
     )
 
