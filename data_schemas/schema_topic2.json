@@ -1,6 +1,6 @@
 {
-    "title": "Filtered",
-    "description": "Filter faces frop topic2",
+    "title": "Topic2Model",
+    "description": "Face event metadata",
     "type": "object",
     "properties": {
         "srctime": {

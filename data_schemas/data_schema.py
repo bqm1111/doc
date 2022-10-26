@@ -156,14 +156,8 @@ class MatchedMeta(CustomBaseModel):
 
 class Topic1Model(TopicBase):
     """
-    event data with full information, including face feature, face cropped image, maybe human cropped image
+    MOT event metadata
     """
-
-    FACE: List[FaceMetaRaw] = Field(
-        [],
-        description="list of all faces in this frame"
-    )
-
     MOT: List[MotMetaRaw] = Field(
         [],
         description="list of all mot object in this frame"
@@ -172,9 +166,16 @@ class Topic1Model(TopicBase):
     class Config:
         title = 'RawMeta'
 
+class Topic2Model(TopicBase):
+    """
+    Face event metadata
+    """
+    face: FaceMetaRaw = Field(
+        description="Face event metadata"
+    )
 
-class Topic3Model(Topic1Model):
-    """For now, it just the topic1 with changed name"""
+class Topic3Model(Topic2Model):
+    """Filter faces frop topic2"""
     class Config:
         title = 'Filtered'
 
@@ -262,6 +263,9 @@ class Topic7Model(Topic5Model):
 if __name__ == "__main__":
     with open('schema_topic1.json', 'w') as _f:
         _f.write(Topic1Model.schema_json(indent=4))
+
+    with open('schema_topic2.json', 'w') as _f:
+        _f.write(Topic2Model.schema_json(indent=4))
 
     with open('schema_topic3.json', 'w') as _f:
         _f.write(Topic3Model.schema_json(indent=4))

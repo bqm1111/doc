@@ -1,6 +1,6 @@
 {
     "title": "RawMeta",
-    "description": "event data with full information, including face feature, face cropped image, maybe human cropped image",
+    "description": "MOT event metadata",
     "type": "object",
     "properties": {
         "srctime": {
@@ -19,14 +19,6 @@
         "frame_id": {
             "description": "frame id of this frame in this session",
             "type": "integer"
-        },
-        "FACE": {
-            "description": "list of all faces in this frame",
-            "default": [],
-            "type": "array",
-            "items": {
-                "$ref": "#/definitions/FaceMetaRaw"
-            }
         },
         "MOT": {
             "description": "list of all mot object in this frame",
@@ -75,44 +67,6 @@
                 "y",
                 "w",
                 "h"
-            ]
-        },
-        "FaceMetaRaw": {
-            "title": "FaceMetaRaw",
-            "description": "Face raw metadata",
-            "type": "object",
-            "properties": {
-                "bbox": {
-                    "$ref": "#/definitions/BBox"
-                },
-                "staff_id": {
-                    "description": "match the staff id in the database",
-                    "type": "string"
-                },
-                "name": {
-                    "description": "name or any text to be display",
-                    "type": "string"
-                },
-                "score": {
-                    "description": "face naming score",
-                    "type": "number"
-                },
-                "feature": {
-                    "description": "base64 encoded of this face feature vector",
-                    "type": "string"
-                },
-                "image": {
-                    "description": "base64 encoded of this face cropped image",
-                    "type": "string"
-                }
-            },
-            "required": [
-                "bbox",
-                "staff_id",
-                "name",
-                "score",
-                "feature",
-                "image"
             ]
         },
         "MotMetaRaw": {
