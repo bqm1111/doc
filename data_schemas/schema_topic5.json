@@ -142,12 +142,17 @@
                 "embedding": {
                     "description": "base64 encoded of the embedding of this person",
                     "type": "string"
+                },
+                "text": {
+                    "description": "text display on object",
+                    "type": "string"
                 }
             },
             "required": [
                 "bbox",
                 "object_id",
-                "embedding"
+                "embedding",
+                "text"
             ]
         },
         "MCMTMeta": {

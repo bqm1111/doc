@@ -140,6 +140,9 @@ class MotMetaRaw(MotMetaBase):
 
 class MotMeta(MotMetaRaw):
     """MOT full metadata"""
+    text: str = Field(
+        description="text display on object"
+    )
     pass
 
 class MCMTMeta(CustomBaseModel):
