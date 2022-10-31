@@ -160,14 +160,14 @@
                 },
                 "text": {
                     "description": "text display on object",
+                    "default": "",
                     "type": "string"
                 }
             },
             "required": [
                 "bbox",
                 "object_id",
-                "embedding",
-                "text"
+                "embedding"
             ]
         },
         "MCMTMeta": {
