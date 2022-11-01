@@ -7,51 +7,74 @@ from pydantic import BaseModel, Field
 
 class CustomBaseModel(BaseModel):
     """just the BaseModel without title"""
+
     class Config:
         @staticmethod
-        def schema_extra(schema: Dict[str, Any], model: Type['CustomBaseModel']) -> None:
-            for prop in schema.get('properties', {}).values():
-                prop.pop('title', None)
+        def schema_extra(schema: Dict[str, Any], model: Type["CustomBaseModel"]) -> None:
+            for prop in schema.get("properties", {}).values():
+                prop.pop("title", None)
 
 
 class EventBase(CustomBaseModel):
     """Base event"""
-    srctime: datetime = Field(
-        description="Time stamp of this image"
-    )
-    camera_id: str = Field(
-        description="id of the camera that this event blong to"
-    )
+
+    srctime: datetime = Field(description="Time stamp of this image")
+    camera_id: str = Field(description="id of the camera that this event blong to")
 
 
 class TopicBase(EventBase):
     """Base topic"""
-    session_id: str = Field(
-        description="unique id of deepstream-app session"
-    )
-    frame_id: int = Field(
-        description="frame id of this frame in this session"
-    )
+
+    session_id: str = Field(description="unique id of deepstream-app session")
+    frame_id: int = Field(description="frame id of this frame in this session")
 
     def __hash__(self):
         return hash((type(self), self.session_id, self.camera_id, self.frame_id))
 
-    def __eq__(self, other: 'TopicBase'):
-        return (self.session_id, self.camera_id, self.frame_id) == (other.session_id, other.camera_id, other.frame_id)
+    def __eq__(self, other: "TopicBase"):
+        return (self.session_id, self.camera_id, self.frame_id) == (
+            other.session_id,
+            other.camera_id,
+            other.frame_id,
+        )
 
-    def __ne__(self, other: 'TopicBase'):
+    def __ne__(self, other: "TopicBase"):
         # Not strictly necessary, but to avoid having both x==y and x!=y
         # True at the same time
-        return not(self == other)
+        return not (self == other)
 
-    def get_key(self) -> Tuple:
-        # return (self.session_id, self.camera_id, self.frame_id)
+    def __lt__(self, other: "TopicBase"):
+        if self.session_id == other.session_id and self.camera_id == other.camera_id:
+            return self.frame_id < other.frame_id
+        else:
+            return False
+
+    def __le__(self, other: "TopicBase"):
+        if self.session_id == other.session_id and self.camera_id == other.camera_id:
+            return self.frame_id <= other.frame_id
+        else:
+            return False
+
+    def __gt__(self, other: "TopicBase"):
+        if self.session_id == other.session_id and self.camera_id == other.camera_id:
+            return self.frame_id > other.frame_id
+        else:
+            return False
+
+    def __ge__(self, other: "TopicBase"):
+        if self.session_id == other.session_id and self.camera_id == other.camera_id:
+            return self.frame_id >= other.frame_id
+        else:
+            return False
+
+    def get_key(self) -> "TopicBase":
         return TopicBase(
             srctime=self.srctime,
             camera_id=self.camera_id,
             session_id=self.session_id,
-            frame_id=self.frame_id
+            frame_id=self.frame_id,
         )
+
 
 def clip(value: float, min: float = 0.0, max: float = 1.0):
     """force min <= value <= max"""
@@ -64,6 +87,7 @@ def clip(value: float, min: float = 0.0, max: float = 1.0):
 
 class BBox(CustomBaseModel):
     """Bouding boxes in relative coordinate"""
+
     x: float = Field(ge=0, le=1.0)
     y: float = Field(ge=0, le=1.0)
     w: float = Field(ge=0, le=1.0)
@@ -84,75 +108,58 @@ class BBox(CustomBaseModel):
 
 class FaceMetaBase(CustomBaseModel):
     """Face base metadata"""
+
     bbox: BBox
-    staff_id: str = Field(
-        description="match the staff id in the database"
-    )
-    name: str = Field(
-        description="name or any text to be display"
-    )
-    score: float = Field(
-        description="face naming score"
-    )
+    staff_id: str = Field(description="match the staff id in the database")
+    name: str = Field(description="name or any text to be display")
+    score: float = Field(description="face naming score")
+
 
 class FaceMetaRaw(FaceMetaBase):
     """Face raw metadata"""
-    feature: str = Field(
-        description="base64 encoded of this face feature vector"
-    )
-    image: str = Field(
-        description="base64 encoded of this face cropped image"
-    )
+
+    feature: str = Field(description="base64 encoded of this face feature vector")
+    image: str = Field(description="base64 encoded of this face cropped image")
 
 
 class FaceMeta(FaceMetaRaw):
     """Full Face metadata"""
-    is_stranger: bool = Field(
-        description="is this face a stranger?"
-    )
-    title: str = Field(
-        "",
-        description="displaying title"
-    )
-    note: str = Field(
-        "",
-        description="custom notes go here"
-    )
+
+    is_stranger: bool = Field(description="is this face a stranger?")
+    title: str = Field("", description="displaying title")
+    note: str = Field("", description="custom notes go here")
+
 
 class MotMetaBase(CustomBaseModel):
     """MOT base metadata"""
-    bbox: BBox = Field(
-        description="bouding box of this person"
-    )
-    object_id: int = Field(
-        description="MOT object id"
-    )
-    embedding: str = Field(
-        description="base64 encoded of the embedding of this person"
-    )
+
+    bbox: BBox = Field(description="bouding box of this person")
+    object_id: int = Field(description="MOT object id")
+    embedding: str = Field(description="base64 encoded of the embedding of this person")
+
 
 class MotMetaRaw(MotMetaBase):
     """MOT raw metadata"""
-    embedding: str = Field(
-        description="base64 encoded of the embedding of this person"
-    )
+
+    embedding: str = Field(description="base64 encoded of the embedding of this person")
 
 
 class MotMeta(MotMetaRaw):
     """MOT full metadata"""
-    text: str = Field(
-        "",
-        description="text display on object"
-    )
+
+    text: str = Field("", description="text display on object")
     pass
+
 
 class MCMTMeta(CustomBaseModel):
     """Multi-camera multi-tracking meta"""
+
     pass
 
 
 class MatchedMeta(CustomBaseModel):
     """an object, which can be face and mot and both"""
+
     face: FaceMeta = Field(None, description="face")
     mot: MotMeta = Field(None, description="mot")
     mtmc: MCMTMeta = Field(None, description="mtmc meta")
@@ -162,72 +169,65 @@ class Topic1Model(TopicBase):
     """
     MOT event metadata
     """
-    MOT: List[MotMetaRaw] = Field(
-        [],
-        description="list of all mot object in this frame"
-    )
+
+    MOT: List[MotMetaRaw] = Field([], description="list of all mot object in this frame")
 
     class Config:
-        title = 'RawMeta'
+        title = "RawMeta"
+
 
 class Topic2Model(TopicBase):
     """
     Face event metadata
     """
-    face: FaceMetaRaw = Field(
-        description="Face event metadata"
-    )
+
+    face: FaceMetaRaw = Field(description="Face event metadata")
+
 
 class Topic3Model(Topic2Model):
     """Filter faces frop topic2"""
+
     class Config:
-        title = 'Filtered'
+        title = "Filtered"
 
 
 class Topic4Model(TopicBase):
     """event data including face feature, cropped face, and matched information between face and mot"""
-    OBJ: List[MatchedMeta] = Field(
-        [],
-        description="list of all object in this frame"
-    )
+
+    OBJ: List[MatchedMeta] = Field([], description="list of all object in this frame")
 
     class Config:
-        title = 'Matched'
+        title = "Matched"
 
 
 class Topic5Model(Topic4Model):
     """For now, it just the topic4 with changed name"""
+
     class Config:
-        title = 'Mtmc'
+        title = "Mtmc"
 
 
 class Topic100Model(TopicBase):
     """emit resized full frame image, without any drawing"""
 
-    frame: str = Field(
-        description="base64 encoded of the resized full frame"
-    )
+    frame: str = Field(description="base64 encoded of the resized full frame")
 
-    frame_w: int = Field(
-        description="width of the image"
-    )
+    frame_w: int = Field(description="width of the image")
 
-    frame_h: int = Field(
-        description="height of the image"
-    )
+    frame_h: int = Field(description="height of the image")
 
     class Config:
-        title = 'RawImage'
+        title = "RawImage"
 
 
 class Topic101Model(Topic100Model, Topic5Model):
     """
-    Debug (resized) image with information, including face (resized) bouding boxes, human (resized) bouding boxes 
+    Debug (resized) image with information, including face (resized) bouding boxes, human (resized) bouding boxes
     Shoule be use to draw in UI apps.
     """
 
     class Config:
-        title = 'Display'
+        title = "Display"
 
 
 class EventType(str, Enum):
@@ -238,56 +238,54 @@ class EventType(str, Enum):
     EVENT_SYSTEM: maybe some important system messages
     EVENT_OTHER: other
     """
-    EVENT_FACE = 'event_face',
-    EVENT_CAMERA = 'event_camera'
-    EVENT_SYSTEM = 'event_system'
-    EVENT_OTHER = 'event_other'
+
+    EVENT_FACE = ("event_face",)
+    EVENT_CAMERA = "event_camera"
+    EVENT_SYSTEM = "event_system"
+    EVENT_OTHER = "event_other"
 
 
 class Topic6Model(EventBase):
     """event data with minimum, only-for-display information"""
-    event_type: EventType = Field(
-        description="type of this event"
-    )
-    face_meta: FaceMeta = Field(
-        description="only face_meat for now"
-    )
+
+    event_type: EventType = Field(description="type of this event")
+    face_meta: FaceMeta = Field(description="only face_meat for now")
 
     class Config:
-        title = 'Event'
+        title = "Event"
 
 
 class Topic7Model(Topic5Model):
     """event data with full information, including face feature, face cropped image, maybe human cropped image"""
 
     class Config:
-        title = 'Forsave'
+        title = "Forsave"
 
 
 if __name__ == "__main__":
-    with open('schema_topic1.json', 'w') as _f:
+    with open("schema_topic1.json", "w") as _f:
         _f.write(Topic1Model.schema_json(indent=4))
 
-    with open('schema_topic2.json', 'w') as _f:
+    with open("schema_topic2.json", "w") as _f:
         _f.write(Topic2Model.schema_json(indent=4))
 
-    with open('schema_topic3.json', 'w') as _f:
+    with open("schema_topic3.json", "w") as _f:
         _f.write(Topic3Model.schema_json(indent=4))
 
-    with open('schema_topic4.json', 'w') as _f:
+    with open("schema_topic4.json", "w") as _f:
         _f.write(Topic4Model.schema_json(indent=4))
 
-    with open('schema_topic5.json', 'w') as _f:
+    with open("schema_topic5.json", "w") as _f:
         _f.write(Topic5Model.schema_json(indent=4))
 
-    with open('schema_topic100.json', 'w') as _f:
+    with open("schema_topic100.json", "w") as _f:
         _f.write(Topic100Model.schema_json(indent=4))
 
-    with open('schema_topic101.json', 'w') as _f:
+    with open("schema_topic101.json", "w") as _f:
         _f.write(Topic101Model.schema_json(indent=4))
 
-    with open('schema_topic6.json', 'w') as _f:
+    with open("schema_topic6.json", "w") as _f:
         _f.write(Topic6Model.schema_json(indent=4))
 
-    with open('schema_topic7.json', 'w') as _f:
+    with open("schema_topic7.json", "w") as _f:
         _f.write(Topic7Model.schema_json(indent=4))

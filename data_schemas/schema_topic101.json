@@ -1,6 +1,6 @@
 {
     "title": "Display",
-    "description": "Debug (resized) image with information, including face (resized) bouding boxes, human (resized) bouding boxes \nShoule be use to draw in UI apps.",
+    "description": "Debug (resized) image with information, including face (resized) bouding boxes, human (resized) bouding boxes\nShoule be use to draw in UI apps.",
     "type": "object",
     "properties": {
         "srctime": {
