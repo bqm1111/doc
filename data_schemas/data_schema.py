@@ -31,37 +31,49 @@ class TopicBase(EventBase):
     def __hash__(self):
         return hash((type(self), self.session_id, self.camera_id, self.frame_id))
 
-    def __eq__(self, other: "TopicBase"):
+    def __eq__(self, other: "TopicBase") -> bool: # type: ignore
+        if not isinstance(other, TopicBase):
+            return NotImplemented
         return (self.session_id, self.camera_id, self.frame_id) == (
             other.session_id,
             other.camera_id,
             other.frame_id,
         )
 
-    def __ne__(self, other: "TopicBase"):
+    def __ne__(self, other: "TopicBase") -> bool: # type: ignore
+        if not isinstance(other, TopicBase):
+            return NotImplemented
         # Not strictly necessary, but to avoid having both x==y and x!=y
         # True at the same time
         return not (self == other)
 
-    def __lt__(self, other: "TopicBase"):
+    def __lt__(self, other: "TopicBase") -> bool:
+        if not isinstance(other, TopicBase):
+            return NotImplemented
         if self.session_id == other.session_id and self.camera_id == other.camera_id:
             return self.frame_id < other.frame_id
         else:
             return False
 
-    def __le__(self, other: "TopicBase"):
+    def __le__(self, other: "TopicBase") -> bool:
+        if not isinstance(other, TopicBase):
+            return NotImplemented
         if self.session_id == other.session_id and self.camera_id == other.camera_id:
             return self.frame_id <= other.frame_id
         else:
             return False
 
-    def __gt__(self, other: "TopicBase"):
+    def __gt__(self, other: "TopicBase") -> bool:
+        if not isinstance(other, TopicBase):
+            return NotImplemented
         if self.session_id == other.session_id and self.camera_id == other.camera_id:
             return self.frame_id > other.frame_id
         else:
             return False
 
-    def __ge__(self, other: "TopicBase"):
+    def __ge__(self, other: "TopicBase") -> bool:
+        if not isinstance(other, TopicBase):
+            return NotImplemented
         if self.session_id == other.session_id and self.camera_id == other.camera_id:
             return self.frame_id >= other.frame_id
         else:
