@@ -122,9 +122,9 @@ class FaceMetaBase(CustomBaseModel):
     """Face base metadata"""
 
     bbox: BBox
-    staff_id: str = Field(description="match the staff id in the database")
-    name: str = Field(description="name or any text to be display")
-    score: float = Field(description="face naming score")
+    staff_id: Optional[str] = Field(description="match the staff id in the database")
+    name: Optional[str] = Field(description="name or any text to be display")
+    score: Optional[float] = Field(description="face naming score")
 
 
 class FaceMetaRaw(FaceMetaBase):
@@ -193,7 +193,7 @@ class Topic2Model(TopicBase):
     Face event metadata
     """
 
-    face: FaceMetaRaw = Field(description="Face event metadata")
+    face: FaceMetaRaw = Field(description="Face event raw metadata")
 
 
 class Topic3Model(Topic2Model):
