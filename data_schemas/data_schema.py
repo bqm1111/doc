@@ -273,6 +273,11 @@ class Topic7Model(Topic5Model):
     class Config:
         title = "Forsave"
 
+class Topic8Model(Topic7Model):
+    """event data with full information, including face feature, face cropped image, maybe human cropped image"""
+
+    class Config:
+        title = "Saved"
 
 if __name__ == "__main__":
     with open("schema_topic1.json", "w") as _f:
@@ -301,3 +306,6 @@ if __name__ == "__main__":
 
     with open("schema_topic7.json", "w") as _f:
         _f.write(Topic7Model.schema_json(indent=4))
+
+    with open("schema_topic8.json", "w") as _f:
+        _f.write(Topic8Model.schema_json(indent=4))

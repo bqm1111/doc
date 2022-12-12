@@ -1,0 +1,193 @@
+{
+    "title": "Saved",
+    "description": "event data with full information, including face feature, face cropped image, maybe human cropped image",
+    "type": "object",
+    "properties": {
+        "srctime": {
+            "description": "Time stamp of this image",
+            "type": "string",
+            "format": "date-time"
+        },
+        "camera_id": {
+            "description": "id of the camera that this event blong to",
+            "type": "string"
+        },
+        "session_id": {
+            "description": "unique id of deepstream-app session",
+            "type": "string"
+        },
+        "frame_id": {
+            "description": "frame id of this frame in this session",
+            "type": "integer"
+        },
+        "OBJ": {
+            "description": "list of all object in this frame",
+            "default": [],
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/MatchedMeta"
+            }
+        }
+    },
+    "required": [
+        "srctime",
+        "camera_id",
+        "session_id",
+        "frame_id"
+    ],
+    "definitions": {
+        "BBox": {
+            "title": "BBox",
+            "description": "Bouding boxes in relative coordinate",
+            "type": "object",
+            "properties": {
+                "x": {
+                    "minimum": 0,
+                    "maximum": 1.0,
+                    "type": "number"
+                },
+                "y": {
+                    "minimum": 0,
+                    "maximum": 1.0,
+                    "type": "number"
+                },
+                "w": {
+                    "minimum": 0,
+                    "maximum": 1.0,
+                    "type": "number"
+                },
+                "h": {
+                    "minimum": 0,
+                    "maximum": 1.0,
+                    "type": "number"
+                }
+            },
+            "required": [
+                "x",
+                "y",
+                "w",
+                "h"
+            ]
+        },
+        "FaceMeta": {
+            "title": "FaceMeta",
+            "description": "Full Face metadata",
+            "type": "object",
+            "properties": {
+                "bbox": {
+                    "$ref": "#/definitions/BBox"
+                },
+                "staff_id": {
+                    "description": "match the staff id in the database",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "name or any text to be display",
+                    "type": "string"
+                },
+                "score": {
+                    "description": "face naming score",
+                    "type": "number"
+                },
+                "feature": {
+                    "description": "base64 encoded of this face feature vector",
+                    "type": "string"
+                },
+                "image": {
+                    "description": "base64 encoded of this face cropped image",
+                    "type": "string"
+                },
+                "is_stranger": {
+                    "description": "is this face a stranger?",
+                    "type": "boolean"
+                },
+                "title": {
+                    "description": "displaying title",
+                    "default": "",
+                    "type": "string"
+                },
+                "note": {
+                    "description": "custom notes go here",
+                    "default": "",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "bbox",
+                "feature",
+                "image",
+                "is_stranger"
+            ]
+        },
+        "MotMeta": {
+            "title": "MotMeta",
+            "description": "MOT full metadata",
+            "type": "object",
+            "properties": {
+                "bbox": {
+                    "description": "bouding box of this person",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/BBox"
+                        }
+                    ]
+                },
+                "object_id": {
+                    "description": "MOT object id",
+                    "type": "integer"
+                },
+                "embedding": {
+                    "description": "base64 encoded of the embedding of this person",
+                    "type": "string"
+                },
+                "text": {
+                    "description": "text display on object",
+                    "default": "",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "bbox",
+                "object_id",
+                "embedding"
+            ]
+        },
+        "MCMTMeta": {
+            "title": "MCMTMeta",
+            "description": "Multi-camera multi-tracking meta",
+            "type": "object",
+            "properties": {}
+        },
+        "MatchedMeta": {
+            "title": "MatchedMeta",
+            "description": "an object, which can be face and mot and both",
+            "type": "object",
+            "properties": {
+                "face": {
+                    "description": "face",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/FaceMeta"
+                        }
+                    ]
+                },
+                "mot": {
+                    "description": "mot",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/MotMeta"
+                        }
+                    ]
+                },
+                "mtmc": {
+                    "description": "mtmc meta",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/MCMTMeta"
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}
