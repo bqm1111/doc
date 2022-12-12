@@ -1,0 +1,5 @@
+pydantic
+# for create topics in kafka server
+confluent_kafka
+# to generate data_schema.ts. Note that `npm i json-schema-to-typescript` must be installed
+pydantic-to-typescript
