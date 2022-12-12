@@ -129,9 +129,6 @@
             },
             "required": [
                 "bbox",
-                "staff_id",
-                "name",
-                "score",
                 "feature",
                 "image",
                 "is_stranger"

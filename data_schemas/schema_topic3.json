@@ -21,7 +21,7 @@
             "type": "integer"
         },
         "face": {
-            "description": "Face event metadata",
+            "description": "Face event raw metadata",
             "allOf": [
                 {
                     "$ref": "#/definitions/FaceMetaRaw"
@@ -101,9 +101,6 @@
             },
             "required": [
                 "bbox",
-                "staff_id",
-                "name",
-                "score",
                 "feature",
                 "image"
             ]
