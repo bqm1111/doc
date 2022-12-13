@@ -125,6 +125,13 @@
                     "description": "custom notes go here",
                     "default": "",
                     "type": "string"
+                },
+                "image_uri": {
+                    "description": "direct url of saved image. Only available in topic8",
+                    "minLength": 1,
+                    "maxLength": 65536,
+                    "format": "uri",
+                    "type": "string"
                 }
             },
             "required": [

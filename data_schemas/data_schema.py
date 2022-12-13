@@ -2,7 +2,7 @@
 from datetime import datetime
 from enum import Enum
 from typing import List, Dict, Any, Optional, Tuple, Type, Union
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, AnyHttpUrl
 
 
 class CustomBaseModel(BaseModel):
@@ -31,7 +31,7 @@ class TopicBase(EventBase):
     def __hash__(self):
         return hash((type(self), self.session_id, self.camera_id, self.frame_id))
 
-    def __eq__(self, other: "TopicBase") -> bool: # type: ignore
+    def __eq__(self, other: "TopicBase") -> bool:  # type: ignore
         if not isinstance(other, TopicBase):
             return NotImplemented
         return (self.session_id, self.camera_id, self.frame_id) == (
@@ -40,7 +40,7 @@ class TopicBase(EventBase):
             other.frame_id,
         )
 
-    def __ne__(self, other: "TopicBase") -> bool: # type: ignore
+    def __ne__(self, other: "TopicBase") -> bool:  # type: ignore
         if not isinstance(other, TopicBase):
             return NotImplemented
         # Not strictly necessary, but to avoid having both x==y and x!=y
@@ -140,6 +140,7 @@ class FaceMeta(FaceMetaRaw):
     is_stranger: bool = Field(description="is this face a stranger?")
     title: str = Field("", description="displaying title")
     note: str = Field("", description="custom notes go here")
+    image_uri: Optional[AnyHttpUrl] = Field(description="direct url of saved image. Only available in topic8")
 
 
 class MotMetaBase(CustomBaseModel):
@@ -273,11 +274,13 @@ class Topic7Model(Topic5Model):
     class Config:
         title = "Forsave"
 
+
 class Topic8Model(Topic7Model):
     """event data with full information, including face feature, face cropped image, maybe human cropped image"""
 
     class Config:
         title = "Saved"
+
 
 if __name__ == "__main__":
     with open("schema_topic1.json", "w") as _f:

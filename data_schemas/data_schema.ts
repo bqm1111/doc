@@ -77,6 +77,10 @@ export interface FaceMeta {
    * custom notes go here
    */
   note?: string;
+  /**
+   * direct url of saved image. Only available in topic8
+   */
+  image_uri?: string;
 }
 /**
  * Face base metadata
